@@ -1,28 +1,22 @@
-body {
-    background-color: #f8f9fa;
+/* Update the currency input styling */
+.currency-input {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+.currency-input::before {
+    content: "₹";
+    position: absolute;
+    left: 12px;
+    z-index: 1;
+    color: #666;
+    pointer-events: none; /* This prevents the rupee symbol from interfering with input */
 }
 
-.form-control:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+.currency-input input {
+    padding-left: 25px;
+    width: 100%;
 }
 
-.table {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.btn-primary {
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-} 
+/* Rest of your existing CSS remains the same */ 

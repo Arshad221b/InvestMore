@@ -23,10 +23,22 @@ class InvestmentInput(BaseModel):
 
     @validator('risk_profile')
     def validate_risk_profile(cls, v):
-        allowed_profiles = ["conservative", "moderate", "aggressive"]
-        if not v or v.lower() not in allowed_profiles:
+        allowed_profiles = ["Conservative", "Moderate", "Aggressive"]
+        if not v or v not in allowed_profiles:
             raise ValueError(f"Risk profile must be one of: {', '.join(allowed_profiles)}")
-        return v.lower()
+        return v
+
+    @validator('retirement_age')
+    def validate_retirement_age(cls, v, values):
+        if 'current_age' in values and v <= values['current_age']:
+            raise ValueError("Retirement age must be greater than current age")
+        return v
+
+    @validator('life_expectancy')
+    def validate_life_expectancy(cls, v, values):
+        if 'retirement_age' in values and v <= values['retirement_age']:
+            raise ValueError("Life expectancy must be greater than retirement age")
+        return v
 
     class Config:
         anystr_strip_whitespace = True

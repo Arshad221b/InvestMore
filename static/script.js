@@ -22,38 +22,50 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         showLoading();
         
-        // Parse currency inputs by removing commas
-        const parseCurrencyValue = (id) => {
-            const value = document.getElementById(id).value.replace(/,/g, '');
-            return parseFloat(value) || 0;
-        };
-
-        const formData = {
-            initial_investment: parseCurrencyValue('initial_investment'),
-            initial_monthly_investment: parseCurrencyValue('initial_monthly_investment'),
-            increment: parseCurrencyValue('increment'),
-            return_rate: parseFloat(document.getElementById('return_rate').value),
-            inflation_rate: parseFloat(document.getElementById('inflation_rate').value),
-            current_age: parseInt(document.getElementById('current_age').value),
-            retirement_age: parseInt(document.getElementById('retirement_age').value),
-            life_expectancy: parseInt(document.getElementById('life_expectancy').value),
-            tax_bracket: parseFloat(document.getElementById('tax_bracket').value),
-            desired_monthly_income: parseCurrencyValue('desired_monthly_income'),
-            risk_profile: document.getElementById('risk_profile').value.toLowerCase(),
-            emergency_fund_months: parseInt(document.getElementById('emergency_fund').value)
-        };
-
-        // Add validation before sending
-        if (!formData.initial_investment || !formData.initial_monthly_investment) {
-            throw new Error('Please enter investment amounts');
-        }
-        if (!formData.current_age || !formData.retirement_age || !formData.life_expectancy) {
-            throw new Error('Please enter all age values');
-        }
-
         try {
-            // Log the form data being sent
-            console.log('Form Data:', formData);
+            // Parse currency inputs by removing commas
+            const parseCurrencyValue = (id) => {
+                const value = document.getElementById(id).value.replace(/,/g, '');
+                return parseFloat(value) || 0;
+            };
+
+            // Get and validate form data
+            const formData = {
+                initial_investment: parseCurrencyValue('initial_investment'),
+                initial_monthly_investment: parseCurrencyValue('initial_monthly_investment'),
+                increment: parseCurrencyValue('increment'),
+                return_rate: parseFloat(document.getElementById('return_rate').value) || 12,
+                inflation_rate: parseFloat(document.getElementById('inflation_rate').value) || 6,
+                current_age: parseInt(document.getElementById('current_age').value),
+                retirement_age: parseInt(document.getElementById('retirement_age').value),
+                life_expectancy: parseInt(document.getElementById('life_expectancy').value) || 75,
+                tax_bracket: parseFloat(document.getElementById('tax_bracket').value) || 30,
+                desired_monthly_income: parseCurrencyValue('desired_monthly_income'),
+                risk_profile: document.getElementById('risk_profile').value,  // Don't lowercase here
+                emergency_fund_months: parseInt(document.getElementById('emergency_fund').value) || 6
+            };
+
+            // Validate required fields
+            if (!formData.initial_investment) {
+                throw new Error('Please enter an initial investment amount');
+            }
+            if (!formData.initial_monthly_investment) {
+                throw new Error('Please enter a monthly investment amount');
+            }
+            if (!formData.current_age) {
+                throw new Error('Please enter your current age');
+            }
+            if (!formData.retirement_age) {
+                throw new Error('Please enter your retirement age');
+            }
+            if (formData.retirement_age <= formData.current_age) {
+                throw new Error('Retirement age must be greater than current age');
+            }
+            if (formData.life_expectancy <= formData.retirement_age) {
+                throw new Error('Life expectancy must be greater than retirement age');
+            }
+
+            console.log('Sending form data:', formData);
 
             const response = await fetch('/investment_projection', {
                 method: 'POST',
@@ -64,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
-            console.log('Response:', data); // Log the response
+            console.log('Received response:', data);
 
             if (!response.ok) {
                 let errorMessage = 'Something went wrong';
@@ -84,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             createRiskAnalysisChart(data);
             displayRecommendations(data, formData);
         } catch (error) {
-            console.error('Error:', error); // Log the error
+            console.error('Error details:', error);
             document.getElementById('results').innerHTML = `
                 <div class="alert alert-danger">
                     <h4>Error</h4>
@@ -429,7 +441,7 @@ function displayRecommendations(data, formData) {
                 <h3>Recommendations</h3>
                 <ul class="recommendations-list">
                     ${recommendationsHtml}
-                </ul>
+        </ul>
             </div>`
         );
     }
@@ -481,11 +493,11 @@ function displayYearlyTable(results) {
     const resultsDiv = document.getElementById('results');
     
     const formatCurrency = (value) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR',
-            maximumFractionDigits: 0
-        }).format(value);
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+    }).format(value);
     };
 
     const yearlyTableHtml = `
@@ -717,4 +729,4 @@ function createRiskAnalysisChart(data) {
     };
 
     Plotly.newPlot('scenariosChart', traces, layout);
-}
+} 

@@ -41,31 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 life_expectancy: parseInt(document.getElementById('life_expectancy').value) || 75,
                 tax_bracket: parseFloat(document.getElementById('tax_bracket').value) || 30,
                 desired_monthly_income: parseCurrencyValue('desired_monthly_income'),
-                risk_profile: document.getElementById('risk_profile').value,  // Don't lowercase here
+                risk_profile: document.getElementById('risk_profile').value,
                 emergency_fund_months: parseInt(document.getElementById('emergency_fund').value) || 6
             };
 
-            // Validate required fields
-            if (!formData.initial_investment) {
-                throw new Error('Please enter an initial investment amount');
-            }
-            if (!formData.initial_monthly_investment) {
-                throw new Error('Please enter a monthly investment amount');
-            }
-            if (!formData.current_age) {
-                throw new Error('Please enter your current age');
-            }
-            if (!formData.retirement_age) {
-                throw new Error('Please enter your retirement age');
-            }
-            if (formData.retirement_age <= formData.current_age) {
-                throw new Error('Retirement age must be greater than current age');
-            }
-            if (formData.life_expectancy <= formData.retirement_age) {
-                throw new Error('Life expectancy must be greater than retirement age');
-            }
-
-            console.log('Sending form data:', formData);
+            console.log('Form data being sent:', formData);  // Debug log
 
             const response = await fetch('/investment_projection', {
                 method: 'POST',
@@ -76,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
-            console.log('Received response:', data);
+            console.log('Response received:', data);  // Debug log
 
             if (!response.ok) {
                 let errorMessage = 'Something went wrong';

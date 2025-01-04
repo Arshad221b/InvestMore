@@ -18,7 +18,7 @@ class InvestmentInput(BaseModel):
     life_expectancy: int = Field(75, ge=0, le=120, description="Life expectancy (India avg ~75)")
     tax_bracket: float = Field(30.0, ge=0, le=100, description="Expected tax bracket in retirement")
     desired_monthly_income: Optional[float] = Field(None, ge=0, description="Desired monthly income in retirement (₹)")
-    risk_profile: str = Field("moderate", description="Investment risk profile")
+    risk_profile: str = Field("Moderate", description="Investment risk profile")
     emergency_fund_months: int = Field(6, ge=0, le=24, description="Desired emergency fund in months")
 
     @validator('risk_profile')

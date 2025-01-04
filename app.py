@@ -222,19 +222,28 @@ async def investment_projection(input_data: InvestmentInput) -> ProjectionRespon
             
             # Calculate desired monthly withdrawal (adjusted for inflation)
             if input_data.desired_monthly_income:
+                # Calculate inflation-adjusted desired income for the current year
                 inflation_factor = math.pow(1 + input_data.inflation_rate / 100, year)
                 desired_monthly_withdrawal = input_data.desired_monthly_income * inflation_factor
                 
-                # Calculate safe maximum withdrawal
+                # Calculate safe maximum withdrawal based on current portfolio value
                 safe_max_withdrawal = (current_value * safe_withdrawal_rate / 12)
                 
-                # Use the lower of desired withdrawal or safe maximum withdrawal
+                # Start with inflation-adjusted desired withdrawal, but cap it at safe maximum
                 monthly_withdrawal = min(desired_monthly_withdrawal, safe_max_withdrawal)
+                
+                # If portfolio can't support even 50% of desired withdrawal, show warning
+                if monthly_withdrawal < (desired_monthly_withdrawal * 0.5):
+                    recommendations.append(
+                        f"Warning: At age {age}, portfolio can only support "
+                        f"{(monthly_withdrawal/desired_monthly_withdrawal*100):.1f}% "
+                        f"of your desired monthly income"
+                    )
             else:
                 # If no desired income specified, use safe withdrawal rate
                 monthly_withdrawal = (current_value * safe_withdrawal_rate / 12)
             
-            # Calculate yearly impact
+            # Calculate yearly impact with monthly compounding
             yearly_withdrawals = 0
             for month in range(12):
                 if current_value > 0:

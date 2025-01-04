@@ -599,24 +599,28 @@ function createSavingsProgressChart(data) {
 
 function createRetirementIncomeChart(data) {
     const retirementData = data.results.filter(r => r.potential_monthly_income > 0);
+    const desiredIncome = data.results[0].desired_monthly_income;
     
     const incomeTrace = {
         x: retirementData.map(r => r.age),
         y: retirementData.map(r => r.potential_monthly_income),
-        name: 'Monthly Income',
+        name: 'Actual Monthly Income',
         type: 'scatter',
         mode: 'lines',
-        line: { color: '#2ecc71' }
+        line: { color: '#2ecc71', width: 3 }
     };
 
-    const inflationAdjustedIncome = {
+    // Calculate inflation-adjusted desired income for comparison
+    const desiredIncomeTrace = {
         x: retirementData.map(r => r.age),
-        y: retirementData.map(r => r.potential_monthly_income / 
-            Math.pow(1 + data.inflation_rate/100, r.age - data.retirement_age)),
-        name: 'Inflation Adjusted Income',
+        y: retirementData.map(r => 
+            desiredIncome * Math.pow(1 + data.inflation_rate/100, 
+                r.age - data.retirement_age)
+        ),
+        name: 'Required Income (Inflation Adjusted)',
         type: 'scatter',
         mode: 'lines',
-        line: { color: '#e74c3c', dash: 'dot' }
+        line: { color: '#e74c3c', width: 2, dash: 'dot' }
     };
 
     const layout = {
@@ -626,11 +630,22 @@ function createRetirementIncomeChart(data) {
             title: 'Monthly Income (₹)',
             tickformat: ',.0f'
         },
-        showlegend: true
+        showlegend: true,
+        annotations: [{
+            x: retirementData[0].age,
+            y: desiredIncome,
+            text: 'Retirement Starts',
+            showarrow: true,
+            arrowhead: 2,
+            arrowsize: 1,
+            arrowwidth: 2,
+            ax: -30,
+            ay: -30
+        }]
     };
 
     Plotly.newPlot('retirementIncomeChart', 
-        [incomeTrace, inflationAdjustedIncome], 
+        [desiredIncomeTrace, incomeTrace], 
         layout);
 }
 

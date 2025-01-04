@@ -484,4 +484,4 @@ document.addEventListener('touchend', function(event) {
         event.preventDefault();
     }
     lastTouchEnd = now;
-}, false); 
+}, false);

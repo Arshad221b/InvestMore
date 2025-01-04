@@ -1,49 +1,56 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
-# Create FastAPI app
+class InvestmentInput(BaseModel):
+    initial_investment: float
+    initial_monthly_investment: float
+    increment: float
+    current_age: int
+    number_of_years: int
+    return_rate: float
+
 app = FastAPI()
 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+async def read_root():
+    return {"message": "Investment Calculator API"}
+
 @app.post("/investment_projection")
-async def investment_projection():
-    # Sample user data (You can replace this with data from another source like a database)
-    user_data = {
-        "initial_investment": 1000,
-        "initial_monthly_investment": 100,
-        "increment": 50,
-        "current_age": 30,
-        "number_of_years": 20,
-        "return_rate": 7
-    }
-
-    if not user_data:
-        raise HTTPException(status_code=404, detail="User data not found.")
-
-    # Gather user inputs
-    initial_investment = float(user_data.get("initial_investment", 0))
-    initial_monthly_investment = float(user_data.get("initial_monthly_investment", 0))
-    increment = float(user_data.get("increment", 0))
-    current_age = int(user_data.get("current_age", 0))
-    number_of_years = int(user_data.get("number_of_years", 0))
-    return_rate = float(user_data.get("return_rate", 0))
-
+async def investment_projection(input_data: InvestmentInput):
     # Initialize variables
-    output = initial_investment
-    with_inflation = initial_investment
+    output = input_data.initial_investment
+    with_inflation = input_data.initial_investment
+    monthly_investment = input_data.initial_monthly_investment
+    current_age = input_data.current_age
     results = []
 
     # Perform calculations
-    for i in range(number_of_years):
-        initial_monthly_investment += increment
-        output = output * ((100 + return_rate) / 100) + (12 * initial_monthly_investment)
+    for i in range(input_data.number_of_years):
+        monthly_investment += input_data.increment
+        output = output * ((100 + input_data.return_rate) / 100) + (12 * monthly_investment)
         with_inflation = output * 0.94
         current_age += 1
 
         # Append yearly details
         results.append({
             "age": current_age,
-            "investment_amount": output,
-            "inflation_adjusted": with_inflation,
-            "monthly_investment": initial_monthly_investment
+            "investment_amount": round(output, 2),
+            "inflation_adjusted": round(with_inflation, 2),
+            "monthly_investment": round(monthly_investment, 2)
         })
 
     return {"message": "Projection completed.", "results": results}

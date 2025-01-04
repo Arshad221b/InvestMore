@@ -1,4 +1,55 @@
-/* Update the currency input styling */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --background-color: #f5f6fa;
+    --card-background: #ffffff;
+}
+
+body {
+    background-color: var(--background-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--primary-color);
+    line-height: 1.6;
+}
+
+.calculator-wrapper {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.section-card {
+    background-color: var(--card-background);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+h3 {
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+label {
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
 .currency-input {
     position: relative;
     display: flex;
@@ -9,14 +60,131 @@
     content: "₹";
     position: absolute;
     left: 12px;
-    z-index: 1;
     color: #666;
-    pointer-events: none; /* This prevents the rupee symbol from interfering with input */
+    pointer-events: none;
 }
 
 .currency-input input {
     padding-left: 25px;
-    width: 100%;
 }
 
-/* Rest of your existing CSS remains the same */ 
+.form-control {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.btn-primary {
+    background-color: var(--secondary-color);
+    border: none;
+    padding: 0.8rem 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.form-text {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+#results {
+    background-color: var(--card-background);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.result-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.chart-container {
+    background-color: var(--card-background);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .calculator-wrapper {
+        padding: 1rem;
+    }
+    
+    .section-card {
+        padding: 1rem;
+    }
+} 
+
+/* Add these styles to your existing CSS */
+.table-responsive {
+    margin-top: 1rem;
+}
+
+.table {
+    font-size: 0.9rem;
+}
+
+.table th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table-danger {
+    --bs-table-bg: rgba(231, 76, 60, 0.1);
+}
+
+.table-warning {
+    --bs-table-bg: rgba(241, 196, 15, 0.1);
+}
+
+.table-info {
+    --bs-table-bg: rgba(52, 152, 219, 0.1);
+}
+
+/* Add these styles for the yearly table */
+.table-hover tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: var(--primary-color);
+    z-index: 1;
+}
+
+.table tbody tr.table-warning {
+    --bs-table-bg: rgba(241, 196, 15, 0.1);
+}
+
+@media (max-width: 768px) {
+    .table {
+        font-size: 0.8rem;
+    }
+    
+    .table td, .table th {
+        padding: 0.5rem;
+    }
+} 

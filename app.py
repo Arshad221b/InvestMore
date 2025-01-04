@@ -90,9 +90,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 def calculate_asset_allocation(risk_profile: str, age: int) -> dict:
     base_allocations = {
-        "conservative": {"equity": 40, "debt": 60, "gold": 0},
-        "moderate": {"equity": 60, "debt": 35, "gold": 5},
-        "aggressive": {"equity": 80, "debt": 15, "gold": 5}
+        "Conservative": {"equity": 40, "debt": 60, "gold": 0},
+        "Moderate": {"equity": 60, "debt": 35, "gold": 5},
+        "Aggressive": {"equity": 80, "debt": 15, "gold": 5}
     }
     
     # Age-based adjustment (reduce equity by 1% for each year over 50)
@@ -112,9 +112,9 @@ def generate_recommendations(input_data: InvestmentInput, summary: dict) -> List
         recommendations.append("Consider increasing your monthly investment to at least ₹10,000 for better wealth accumulation")
     
     # Risk profile recommendations
-    if input_data.current_age < 30 and input_data.risk_profile == "conservative":
+    if input_data.current_age < 30 and input_data.risk_profile == "Conservative":
         recommendations.append("Given your young age, consider a more aggressive investment strategy")
-    elif input_data.current_age > 50 and input_data.risk_profile == "aggressive":
+    elif input_data.current_age > 50 and input_data.risk_profile == "Aggressive":
         recommendations.append("Consider a more conservative allocation to protect your wealth")
     
     # Return rate expectations

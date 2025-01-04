@@ -1,25 +1,24 @@
 from fastapi import FastAPI, HTTPException
-import firebase_admin
-from firebase_admin import credentials, firestore
-
-# Initialize Firebase Admin SDK
-cred = credentials.Certificate("path/to/your/firebase/credentials.json")
-firebase_admin.initialize_app(cred)
-db = firestore.client()
 
 # Create FastAPI app
 app = FastAPI()
 
 @app.post("/investment_projection")
 async def investment_projection():
-    # Fetch input data from Firestore
-    doc_ref = db.collection("investment_inputs").document("user_data")
-    user_data = doc_ref.get().to_dict()
+    # Sample user data (You can replace this with data from another source like a database)
+    user_data = {
+        "initial_investment": 1000,
+        "initial_monthly_investment": 100,
+        "increment": 50,
+        "current_age": 30,
+        "number_of_years": 20,
+        "return_rate": 7
+    }
 
     if not user_data:
-        raise HTTPException(status_code=404, detail="User data not found in Firestore.")
+        raise HTTPException(status_code=404, detail="User data not found.")
 
-    # Gather user inputs from Firestore document
+    # Gather user inputs
     initial_investment = float(user_data.get("initial_investment", 0))
     initial_monthly_investment = float(user_data.get("initial_monthly_investment", 0))
     increment = float(user_data.get("increment", 0))
@@ -47,8 +46,4 @@ async def investment_projection():
             "monthly_investment": initial_monthly_investment
         })
 
-    # Update results in Firestore
-    results_ref = db.collection("investment_results").document("projection")
-    results_ref.set({"projections": results})
-
-    return {"message": "Projection completed and results saved to Firestore.", "results": results}
+    return {"message": "Projection completed.", "results": results}

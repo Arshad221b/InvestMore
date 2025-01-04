@@ -42,6 +42,9 @@ class InvestmentInput(BaseModel):
 
     class Config:
         anystr_strip_whitespace = True
+        json_encoders = {
+            float: lambda v: round(v, 2)
+        }
 
 class YearlyProjection(BaseModel):
     age: int

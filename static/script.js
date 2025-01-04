@@ -23,13 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading();
         
         try {
-            // Parse currency inputs by removing commas
             const parseCurrencyValue = (id) => {
                 const value = document.getElementById(id).value.replace(/,/g, '');
                 return parseFloat(value) || 0;
             };
 
-            // Get and validate form data
+            const riskProfileSelect = document.getElementById('risk_profile');
+            const selectedRiskProfile = riskProfileSelect.options[riskProfileSelect.selectedIndex].value;
+            
+            console.log('Selected risk profile:', selectedRiskProfile); // Debug log
+
             const formData = {
                 initial_investment: parseCurrencyValue('initial_investment'),
                 initial_monthly_investment: parseCurrencyValue('initial_monthly_investment'),
@@ -41,11 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 life_expectancy: parseInt(document.getElementById('life_expectancy').value) || 75,
                 tax_bracket: parseFloat(document.getElementById('tax_bracket').value) || 30,
                 desired_monthly_income: parseCurrencyValue('desired_monthly_income'),
-                risk_profile: document.getElementById('risk_profile').value,
+                risk_profile: selectedRiskProfile,
                 emergency_fund_months: parseInt(document.getElementById('emergency_fund').value) || 6
             };
 
-            console.log('Form data being sent:', formData);  // Debug log
+            console.log('Complete form data:', formData); // Debug log
 
             const response = await fetch('/investment_projection', {
                 method: 'POST',
@@ -56,14 +59,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
-            console.log('Response received:', data);  // Debug log
+            console.log('Raw server response:', data); // Debug log
 
             if (!response.ok) {
                 let errorMessage = 'Something went wrong';
                 if (data.detail) {
-                    errorMessage = typeof data.detail === 'object' 
-                        ? JSON.stringify(data.detail, null, 2)
-                        : data.detail;
+                    if (Array.isArray(data.detail)) {
+                        // Handle validation errors array
+                        errorMessage = data.detail.map(err => 
+                            `${err.loc.join('.')}: ${err.msg}`
+                        ).join('\n');
+                    } else {
+                        errorMessage = data.detail;
+                    }
                 }
                 throw new Error(errorMessage);
             }

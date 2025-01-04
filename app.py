@@ -1,7 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from pydantic import BaseModel, Field, validator
 from typing import Optional, List, Dict
 import math
@@ -24,9 +24,12 @@ class InvestmentInput(BaseModel):
     @validator('risk_profile')
     def validate_risk_profile(cls, v):
         allowed_profiles = ["conservative", "moderate", "aggressive"]
-        if v.lower() not in allowed_profiles:
-            raise ValueError(f"Risk profile must be one of {allowed_profiles}")
+        if not v or v.lower() not in allowed_profiles:
+            raise ValueError(f"Risk profile must be one of: {', '.join(allowed_profiles)}")
         return v.lower()
+
+    class Config:
+        anystr_strip_whitespace = True
 
 class YearlyProjection(BaseModel):
     age: int
@@ -338,4 +341,11 @@ async def investment_projection(input_data: InvestmentInput) -> ProjectionRespon
         risk_profile=input_data.risk_profile,
         recommendations=recommendations,
         age_milestones=generate_age_milestones(input_data)
+    )
+
+@app.exception_handler(ValueError)
+async def validation_exception_handler(request: Request, exc: ValueError):
+    return JSONResponse(
+        status_code=400,
+        content={"detail": str(exc)}
     )

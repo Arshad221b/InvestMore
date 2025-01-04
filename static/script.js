@@ -39,11 +39,22 @@ document.addEventListener('DOMContentLoaded', () => {
             life_expectancy: parseInt(document.getElementById('life_expectancy').value),
             tax_bracket: parseFloat(document.getElementById('tax_bracket').value),
             desired_monthly_income: parseCurrencyValue('desired_monthly_income'),
-            risk_profile: document.getElementById('risk_profile').value,
+            risk_profile: document.getElementById('risk_profile').value.toLowerCase(),
             emergency_fund_months: parseInt(document.getElementById('emergency_fund').value)
         };
 
+        // Add validation before sending
+        if (!formData.initial_investment || !formData.initial_monthly_investment) {
+            throw new Error('Please enter investment amounts');
+        }
+        if (!formData.current_age || !formData.retirement_age || !formData.life_expectancy) {
+            throw new Error('Please enter all age values');
+        }
+
         try {
+            // Log the form data being sent
+            console.log('Form Data:', formData);
+
             const response = await fetch('/investment_projection', {
                 method: 'POST',
                 headers: {
@@ -53,18 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
-            
+            console.log('Response:', data); // Log the response
+
             if (!response.ok) {
                 let errorMessage = 'Something went wrong';
                 if (data.detail) {
-                    if (typeof data.detail === 'object') {
-                        // Handle validation errors
-                        errorMessage = Object.values(data.detail)
-                            .map(err => err.msg || err)
-                            .join('\n');
-                    } else {
-                        errorMessage = data.detail;
-                    }
+                    errorMessage = typeof data.detail === 'object' 
+                        ? JSON.stringify(data.detail, null, 2)
+                        : data.detail;
                 }
                 throw new Error(errorMessage);
             }
@@ -77,10 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
             createRiskAnalysisChart(data);
             displayRecommendations(data, formData);
         } catch (error) {
+            console.error('Error:', error); // Log the error
             document.getElementById('results').innerHTML = `
                 <div class="alert alert-danger">
                     <h4>Error</h4>
                     <pre>${error.message}</pre>
+                    <small>Please check the form values and try again.</small>
                 </div>
             `;
         } finally {

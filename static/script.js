@@ -61,6 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
             displayResults(data, formData);
             createCharts(data);
             createPieChart(data);
+            createSavingsProgressChart(data);
+            createRetirementIncomeChart(data);
+            createRiskAnalysisChart(data);
             displayRecommendations(data, formData);
         } catch (error) {
             document.getElementById('results').innerHTML = `
@@ -538,3 +541,144 @@ document.addEventListener('touchend', function(event) {
     }
     lastTouchEnd = now;
 }, false);
+
+function createSavingsProgressChart(data) {
+    const totalContributions = data.results.map(r => r.monthly_investment * 12);
+    const returns = data.results.map((r, i) => r.annual_return);
+    const cumulative = data.results.map(r => r.investment_amount);
+    const years = data.results.map(r => r.age);
+
+    const contributionsTrace = {
+        x: years,
+        y: totalContributions,
+        name: 'Annual Contributions',
+        type: 'bar',
+        marker: { color: '#2ecc71' }
+    };
+
+    const returnsTrace = {
+        x: years,
+        y: returns,
+        name: 'Investment Returns',
+        type: 'bar',
+        marker: { color: '#3498db' }
+    };
+
+    const cumulativeTrace = {
+        x: years,
+        y: cumulative,
+        name: 'Total Portfolio',
+        type: 'scatter',
+        mode: 'lines',
+        line: { color: '#e74c3c', width: 3 },
+        yaxis: 'y2'
+    };
+
+    const layout = {
+        title: 'Savings Progress & Returns',
+        barmode: 'stack',
+        xaxis: { title: 'Age' },
+        yaxis: { 
+            title: 'Annual Amount (₹)',
+            tickformat: ',.0f'
+        },
+        yaxis2: {
+            title: 'Total Portfolio Value (₹)',
+            overlaying: 'y',
+            side: 'right',
+            tickformat: ',.0f'
+        },
+        showlegend: true,
+        legend: { x: 0.05, y: 1.1 }
+    };
+
+    Plotly.newPlot('savingsProgressChart', 
+        [contributionsTrace, returnsTrace, cumulativeTrace], 
+        layout);
+}
+
+function createRetirementIncomeChart(data) {
+    const retirementData = data.results.filter(r => r.potential_monthly_income > 0);
+    
+    const incomeTrace = {
+        x: retirementData.map(r => r.age),
+        y: retirementData.map(r => r.potential_monthly_income),
+        name: 'Monthly Income',
+        type: 'scatter',
+        mode: 'lines',
+        line: { color: '#2ecc71' }
+    };
+
+    const inflationAdjustedIncome = {
+        x: retirementData.map(r => r.age),
+        y: retirementData.map(r => r.potential_monthly_income / 
+            Math.pow(1 + data.inflation_rate/100, r.age - data.retirement_age)),
+        name: 'Inflation Adjusted Income',
+        type: 'scatter',
+        mode: 'lines',
+        line: { color: '#e74c3c', dash: 'dot' }
+    };
+
+    const layout = {
+        title: 'Retirement Income Analysis',
+        xaxis: { title: 'Age' },
+        yaxis: { 
+            title: 'Monthly Income (₹)',
+            tickformat: ',.0f'
+        },
+        showlegend: true
+    };
+
+    Plotly.newPlot('retirementIncomeChart', 
+        [incomeTrace, inflationAdjustedIncome], 
+        layout);
+}
+
+function createRiskAnalysisChart(data) {
+    const years = data.results.map(r => r.age);
+    const portfolioValue = data.results.map(r => r.investment_amount);
+    
+    // Calculate different scenario returns
+    const conservativeReturn = portfolioValue.map(v => v * 0.8);  // 20% lower
+    const aggressiveReturn = portfolioValue.map(v => v * 1.2);    // 20% higher
+
+    const traces = [
+        {
+            x: years,
+            y: aggressiveReturn,
+            name: 'Optimistic Scenario',
+            type: 'scatter',
+            mode: 'lines',
+            line: { color: '#2ecc71', width: 1 }
+        },
+        {
+            x: years,
+            y: portfolioValue,
+            name: 'Expected Scenario',
+            type: 'scatter',
+            mode: 'lines',
+            line: { color: '#3498db', width: 2 }
+        },
+        {
+            x: years,
+            y: conservativeReturn,
+            name: 'Conservative Scenario',
+            type: 'scatter',
+            mode: 'lines',
+            line: { color: '#e74c3c', width: 1 }
+        }
+    ];
+
+    const layout = {
+        title: 'Investment Scenarios Analysis',
+        xaxis: { title: 'Age' },
+        yaxis: { 
+            title: 'Portfolio Value (₹)',
+            tickformat: ',.0f'
+        },
+        showlegend: true,
+        legend: { x: 0.05, y: 1 }
+    };
+
+    Plotly.newPlot('scenariosChart', traces, layout);
+}

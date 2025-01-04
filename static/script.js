@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('investmentForm');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        showLoading();
         
         // Parse currency inputs by removing commas
         const parseCurrencyValue = (id) => {
@@ -66,6 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     Error: ${error.message}
                 </div>
             `;
+        } finally {
+            hideLoading();
         }
     });
 });
@@ -115,6 +118,17 @@ function displayResults(data, formData) {
 }
 
 function createCharts(data) {
+    const config = {
+        responsive: true,
+        displayModeBar: false,
+        // Make touch interaction better on mobile
+        dragmode: false,
+        // Adjust font sizes for mobile
+        font: {
+            size: window.innerWidth < 768 ? 10 : 12
+        }
+    };
+
     // Portfolio Growth Chart
     const years = data.results.map(r => r.age);
     const portfolioValues = data.results.map(r => r.investment_amount);
@@ -170,10 +184,18 @@ function createCharts(data) {
         },
         plot_bgcolor: '#ffffff',
         paper_bgcolor: '#ffffff',
-        hovermode: 'x unified'
+        hovermode: 'x unified',
+        height: window.innerWidth < 768 ? 300 : 400,
+        margin: {
+            l: 50,
+            r: 30,
+            t: 30,
+            b: 50
+        }
     };
 
-    Plotly.newPlot('portfolioGrowthChart', [growthTrace1, growthTrace2, withdrawalTrace], growthLayout);
+    Plotly.newPlot('portfolioGrowthChart', [growthTrace1, growthTrace2, withdrawalTrace], 
+        {...growthLayout, ...config});
 
     // Asset Allocation Over Time Chart
     const equityAllocation = data.results.map(r => r.asset_allocation.equity);
@@ -432,4 +454,34 @@ function displayYearlyTable(results) {
     `;
     
     resultsDiv.insertAdjacentHTML('beforeend', yearlyTableHtml);
-} 
+}
+
+// Add loading state
+function showLoading() {
+    document.body.classList.add('loading');
+}
+
+function hideLoading() {
+    document.body.classList.remove('loading');
+}
+
+// Add smooth scrolling to results
+function scrollToResults() {
+    document.getElementById('results').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
+
+// Add touch event handling for better mobile interaction
+document.addEventListener('touchstart', function() {}, {passive: true});
+
+// Prevent zoom on double tap
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function(event) {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+    }
+    lastTouchEnd = now;
+}, false); 

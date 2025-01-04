@@ -124,13 +124,113 @@ label {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .calculator-wrapper {
-        padding: 1rem;
+        padding: 1rem 0.5rem;
     }
     
     .section-card {
         padding: 1rem;
+        margin-bottom: 1rem;
     }
-} 
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.1rem;
+    }
+
+    .form-control {
+        font-size: 16px; /* Prevents iOS zoom on input focus */
+        padding: 0.5rem;
+    }
+
+    /* Make tables scrollable horizontally */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -1rem;
+        padding: 0 1rem;
+    }
+
+    .table {
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+
+    .table td, .table th {
+        padding: 0.5rem 0.3rem;
+    }
+
+    /* Make charts responsive */
+    .chart-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Improve button touch target */
+    .btn {
+        padding: 0.8rem 1.5rem;
+        margin: 0.5rem 0;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    /* Improve form layout */
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    /* Make currency inputs more touch-friendly */
+    .currency-input input {
+        padding-left: 30px;
+        height: 44px;
+    }
+
+    .currency-input::before {
+        font-size: 16px;
+        left: 10px;
+    }
+
+    /* Improve results display */
+    .result-card {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    /* Stack columns on mobile */
+    .row > [class*='col-'] {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Add smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Improve touch targets */
+select.form-control {
+    height: 44px;
+}
+
+/* Add loading state */
+.loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Add pull-to-refresh indicator */
+.ptr-element {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: #aaa;
+    text-align: center;
+    height: 50px;
+}
 
 /* Add these styles to your existing CSS */
 .table-responsive {

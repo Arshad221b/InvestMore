@@ -24,9 +24,9 @@ class InvestmentInput(BaseModel):
     @validator('risk_profile')
     def validate_risk_profile(cls, v):
         allowed_profiles = ["conservative", "moderate", "aggressive"]
-        if v not in allowed_profiles:
+        if v.lower() not in allowed_profiles:
             raise ValueError(f"Risk profile must be one of {allowed_profiles}")
-        return v
+        return v.lower()
 
 class YearlyProjection(BaseModel):
     age: int

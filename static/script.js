@@ -55,7 +55,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             
             if (!response.ok) {
-                throw new Error(data.detail || 'Something went wrong');
+                let errorMessage = 'Something went wrong';
+                if (data.detail) {
+                    if (typeof data.detail === 'object') {
+                        // Handle validation errors
+                        errorMessage = Object.values(data.detail)
+                            .map(err => err.msg || err)
+                            .join('\n');
+                    } else {
+                        errorMessage = data.detail;
+                    }
+                }
+                throw new Error(errorMessage);
             }
 
             displayResults(data, formData);
@@ -68,7 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             document.getElementById('results').innerHTML = `
                 <div class="alert alert-danger">
-                    Error: ${error.message}
+                    <h4>Error</h4>
+                    <pre>${error.message}</pre>
                 </div>
             `;
         } finally {

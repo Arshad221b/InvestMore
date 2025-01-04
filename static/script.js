@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             displayResults(data, formData);
             createCharts(data);
+            createPieChart(data);
             displayRecommendations(data, formData);
         } catch (error) {
             document.getElementById('results').innerHTML = `
@@ -318,6 +319,58 @@ function createCharts(data) {
     }
 
     Plotly.newPlot('portfolioMetricsChart', [annualReturnsTrace, withdrawalRateTrace], metricsLayout);
+}
+
+function createPieChart(data) {
+    // Get the latest year's allocation
+    const latestAllocation = data.results[data.results.length - 1].asset_allocation;
+    
+    const pieData = [{
+        values: [
+            latestAllocation.equity,
+            latestAllocation.debt,
+            latestAllocation.gold
+        ],
+        labels: ['Equity', 'Debt', 'Gold'],
+        type: 'pie',
+        hole: 0.4,
+        marker: {
+            colors: ['#e74c3c', '#3498db', '#f1c40f']
+        },
+        textinfo: 'label+percent',
+        textposition: 'outside',
+        automargin: true
+    }];
+
+    const pieLayout = {
+        title: 'Current Asset Allocation',
+        height: 400,
+        showlegend: true,
+        legend: {
+            orientation: 'h',
+            y: -0.1
+        },
+        annotations: [{
+            text: 'Asset<br>Split',
+            showarrow: false,
+            font: {
+                size: 14
+            }
+        }]
+    };
+
+    // Create a new div for the pie chart if it doesn't exist
+    if (!document.getElementById('assetPieChart')) {
+        const pieDiv = document.createElement('div');
+        pieDiv.id = 'assetPieChart';
+        document.querySelector('#charts .row').insertAdjacentElement('beforeend', 
+            document.createElement('div').className = 'col-md-6').appendChild(pieDiv);
+    }
+
+    Plotly.newPlot('assetPieChart', pieData, pieLayout, {
+        responsive: true,
+        displayModeBar: false
+    });
 }
 
 function displayRecommendations(data, formData) {

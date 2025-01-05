@@ -2,6 +2,7 @@
 
 A comprehensive investment portfolio management and analysis tool that helps users make informed investment decisions.
 
+
 ## Screenshots
 
 ### Dashboard
@@ -14,12 +15,33 @@ A comprehensive investment portfolio management and analysis tool that helps use
 
 Add your own features, fix bugs, improve the code, etc.
 
-Just basic git workflow:
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+
+
+## Deployment
+
+### Heroku Deployment
+
+1. Create a Heroku account and install the Heroku CLI
+
+2. Login to Heroku
+```bash
+heroku login
+```
+
+3. Create a new Heroku app
+```bash
+heroku create investmore-app
+```
+
+4. Deploy to Heroku
+```bash
+git push heroku main
+```
+
+Visit your deployed application at: https://investmore-app.herokuapp.com
+
+
+
 
 
 I created this project just to track my own investments and to learn more about the technologies I'm interested in. Nothing more, nothing less. :)

@@ -12,6 +12,14 @@ A comprehensive investment portfolio management and analysis tool that helps use
 - Historical data visualization
 - Asset allocation recommendations
 
+## Screenshots
+
+### Dashboard
+![Dashboard Overview](screenshots/Screenshot 2025-01-05 at 9.10.17 PM.png)
+
+### Portfolio Analysis
+![Portfolio Analysis](screenshots/Screenshot 2025-01-05 at 9.11.09 PM.png)
+
 ## Contributing
 
 Add your own features, fix bugs, improve the code, etc.

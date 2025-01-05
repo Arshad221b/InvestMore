@@ -12,13 +12,11 @@ A comprehensive investment portfolio management and analysis tool that helps use
 - Historical data visualization
 - Asset allocation recommendations
 
-
-## API Documentation
-
-Detailed API documentation can be found in the `/docs` directory or at our [API Documentation](link-to-api-docs).
-
 ## Contributing
 
+Add your own features, fix bugs, improve the code, etc.
+
+Just basic git workflow:
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)

@@ -15,10 +15,10 @@ A comprehensive investment portfolio management and analysis tool that helps use
 ## Screenshots
 
 ### Dashboard
-![Dashboard Overview](screenshots/Screenshot 2025-01-05 at 9.10.17 PM.png)
+![screenshots/Screenshot 2025-01-05 at 9.10.17 PM.png](https://github.com/Arshad221b/InvestMore/blob/main/screenshots/Screenshot%202025-01-05%20at%209.10.17%E2%80%AFPM.png)
 
 ### Portfolio Analysis
-![Portfolio Analysis](screenshots/Screenshot 2025-01-05 at 9.11.09 PM.png)
+![[Portfolio Analysis](screenshots/Screenshot 2025-01-05 at 9.11.09 PM.png)](https://github.com/Arshad221b/InvestMore/blob/main/screenshots/Screenshot%202025-01-05%20at%209.11.09%E2%80%AFPM.png)
 
 ## Contributing
 
